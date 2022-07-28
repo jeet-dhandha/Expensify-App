@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator, Dimensions} from 'react-native';
 import PropTypes from 'prop-types';
 import Str from 'expensify-common/lib/str';
 import styles from '../styles/styles';
@@ -12,6 +12,7 @@ import compose from '../libs/compose';
 import Text from './Text';
 import Tooltip from './Tooltip';
 import themeColors from '../styles/themes/default';
+import VideoAttachment from './VideoAttachment';
 
 const propTypes = {
     /** URL to full-sized attachment */
@@ -48,6 +49,23 @@ const AttachmentView = (props) => {
             <PDFView
                 sourceURL={props.sourceURL}
                 style={styles.imageModalPDF}
+            />
+        );
+    }
+
+    // will appear with a sourceURL that is a blob
+    if (Str.isVideo(props.sourceURL)) {
+        return (
+            <VideoAttachment
+                sourceURL={props.sourceURL}
+                style={{ 
+                    height: Dimensions.get("screen").height / 3,
+                    width: Dimensions.get("screen").width / 1.5,
+                    backgroundColor: "#eee",
+                    borderRadius: 10,
+                    marginTop: 7.5,
+                    marginBottom: 2.5,
+                }}
             />
         );
     }

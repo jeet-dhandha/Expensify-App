@@ -11,6 +11,7 @@ import * as ReportActionContextMenu from '../../../pages/home/report/ContextMenu
 import * as ContextMenuActions from '../../../pages/home/report/ContextMenu/ContextMenuActions';
 import AttachmentView from '../../AttachmentView';
 import styles from '../../../styles/styles';
+import VideoList from '../../../libs/actions/VideoList';
 
 /*
  * This is a default anchor component for regular links.
@@ -24,6 +25,17 @@ class BaseAnchorForCommentsOnly extends React.Component {
         };
         this.processDownload = this.processDownload.bind(this);
     }
+    
+    componentDidMount() {
+        VideoList.getLocalPaths().then(filesList => {
+            const uri = this.props.href?.split?.("?")?.[0];
+            console.log("this.props.href => ",uri)
+            const fileIndex = filesList?.findIndex?.(item => item.uri === uri);
+            if(this.props.href && filesList?.length && typeof fileIndex === "number"){
+                this.setState({localFileURL: filesList[fileIndex].localFileURL})
+            }
+        })
+    }
 
     /**
      * Initiate file downloading and update downloading flags
@@ -33,7 +45,18 @@ class BaseAnchorForCommentsOnly extends React.Component {
      */
     processDownload(href, fileName) {
         this.setState({isDownloading: true});
-        fileDownload(href, fileName).then(() => this.setState({isDownloading: false}));
+        VideoList.getLocalPaths().then(filesList => {
+            filesList = filesList ?? [];
+            if (href.split("?")?.[0] && filesList.findIndex(item => item.uri === href.split("?")?.[0]) === -1){
+                fileDownload(href, fileName).then((file) => {
+                    console.log("FILE PATHS => ", file)
+                    if(typeof file === "string") {
+                        VideoList.setVideoLocalList({localFileURL: file, uri: href.split("?")?.[0] })
+                    }
+                    this.setState({isDownloading: false})
+                });
+            }
+        })
     }
 
     render() {
@@ -52,7 +75,7 @@ class BaseAnchorForCommentsOnly extends React.Component {
                         }}
                     >
                         <AttachmentView
-                            sourceURL={this.props.href}
+                            sourceURL={this.state.localFileURL ?? this.props.href}
                             file={{name: this.props.displayName}}
                             shouldShowDownloadIcon
                             shouldShowLoadingSpinnerIcon={this.state.isDownloading}
