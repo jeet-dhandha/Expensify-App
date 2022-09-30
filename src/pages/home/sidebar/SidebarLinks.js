@@ -31,6 +31,9 @@ const propTypes = {
     /** Toggles the navigation menu open and closed */
     onLinkClick: PropTypes.func.isRequired,
 
+    /** Blocks Report Press when needed. */
+    blockedReportPress: PropTypes.bool.isRequired,
+
     /** Navigates to settings and hides sidebar */
     onAvatarClick: PropTypes.func.isRequired,
 
@@ -146,8 +149,10 @@ class SidebarLinks extends React.Component {
                         option => option.toString() === this.props.currentlyViewedReportID
                     ))}
                     onSelectRow={(option) => {
-                        Navigation.navigate(ROUTES.getReportRoute(option.reportID));
-                        this.props.onLinkClick();
+                        if(!this.props.blockedReportPress){
+                            Navigation.navigate(ROUTES.getReportRoute(option.reportID));
+                            this.props.onLinkClick();
+                        }
                     }}
                     shouldDisableFocusOptions={this.props.isSmallScreenWidth}
                     optionMode={this.props.priorityMode === CONST.PRIORITY_MODE.GSD ? 'compact' : 'default'}
