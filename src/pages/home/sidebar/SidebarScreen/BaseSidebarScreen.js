@@ -19,6 +19,8 @@ import Performance from '../../../../libs/Performance';
 import * as Welcome from '../../../../libs/actions/Welcome';
 import {sidebarPropTypes, sidebarDefaultProps} from './sidebarPropTypes';
 import withDrawerState from '../../../../components/withDrawerState';
+import { InteractionManager } from 'react-native';
+import SCREENS from '../../../../SCREENS';
 
 const propTypes = {
 
@@ -47,6 +49,7 @@ class BaseSidebarScreen extends Component {
 
         this.state = {
             isCreateMenuActive: false,
+            blockFABPress: false,
         };
     }
 
@@ -93,6 +96,14 @@ class BaseSidebarScreen extends Component {
     startTimer() {
         Timing.start(CONST.TIMING.SWITCH_REPORT);
         Performance.markStart(CONST.TIMING.SWITCH_REPORT);
+
+        /** Block FAB press when user is navigating. */
+        this.setState({blockFABPress: true});
+
+        /** Reset after navigation is complete. */
+        setTimeout(() => {
+            this.setState({blockFABPress: false});
+        },300)
     }
 
     render() {
@@ -109,6 +120,7 @@ class BaseSidebarScreen extends Component {
                             <SidebarLinks
                                 onLinkClick={this.startTimer}
                                 insets={insets}
+                                blockedReportPress={this.state.isCreateMenuActive}
                                 onAvatarClick={this.navigateToSettings}
                                 isSmallScreenWidth={this.props.isSmallScreenWidth}
                                 isDrawerOpen={this.props.isDrawerOpen}
@@ -117,7 +129,7 @@ class BaseSidebarScreen extends Component {
                                 accessibilityLabel={this.props.translate('sidebarScreen.fabNewChat')}
                                 accessibilityRole="button"
                                 isActive={this.state.isCreateMenuActive}
-                                onPress={this.showCreateMenu}
+                                onPress={this.state.blockFABPress ? undefined : this.showCreateMenu}
                             />
                         </View>
                         <PopoverMenu
