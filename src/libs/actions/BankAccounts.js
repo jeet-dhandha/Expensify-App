@@ -44,7 +44,7 @@ function updatePlaidData(plaidData) {
     Onyx.merge(ONYXKEYS.PLAID_DATA, plaidData);
 }
 
-function clearOnfido() {
+function clearOnfidoToken() {
     Onyx.merge(ONYXKEYS.ONFIDO_TOKEN, '');
 }
 
@@ -291,15 +291,29 @@ function connectBankAccountManually(bankAccountID, accountNumber, routingNumber,
     }, getVBBADataForOnyx());
 }
 
+/**
+ * Verify the user's identity via Onfido
+ *
+ * @param {Number} bankAccountID
+ * @param {Object} onfidoData
+ */
+function verifyIdentityForBankAccount(bankAccountID, onfidoData) {
+    API.write('VerifyIdentityForBankAccount', {
+        bankAccountID,
+        onfidoData: JSON.stringify(onfidoData),
+    }, getVBBADataForOnyx());
+}
+
 export {
     addPersonalBankAccount,
     connectBankAccountManually,
     deletePaymentBankAccount,
     clearPersonalBankAccount,
     clearPlaid,
-    clearOnfido,
+    clearOnfidoToken,
     updatePersonalInformationForBankAccount,
     validateBankAccount,
+    verifyIdentityForBankAccount,
     updateCompanyInformationForBankAccount,
     connectBankAccountWithPlaid,
     updatePlaidData,
