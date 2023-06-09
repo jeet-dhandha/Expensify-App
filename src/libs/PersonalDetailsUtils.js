@@ -2,6 +2,7 @@ import Onyx from 'react-native-onyx';
 import _ from 'underscore';
 import ONYXKEYS from '../ONYXKEYS';
 import * as Localize from './Localize';
+import * as PersonalDetails from './actions/PersonalDetails';
 
 let personalDetails = [];
 Onyx.connect({
@@ -22,9 +23,10 @@ function getPersonalDetailsByIDs(accountIDs, currentUserAccountID, shouldChangeU
         _.filter(personalDetails, (detail) => accountIDs.includes(detail.accountID)),
         (detail) => {
             if (shouldChangeUserDisplayName && currentUserAccountID.toString() === detail.accountID) {
+                const name = PersonalDetails.getDisplayNameFromPersonalDetails(detail);
                 result.push({
                     ...detail,
-                    displayName: Localize.translateLocal('common.you'),
+                    displayName: name.length ? name : Localize.translateLocal('common.you'),
                 });
             } else {
                 result.push(detail);

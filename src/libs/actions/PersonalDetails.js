@@ -47,6 +47,17 @@ function getDisplayName(login, personalDetail) {
 }
 
 /**
+ * Returns the displayName from a personal detail object
+ *
+ * @param {Object} [personalDetail]
+ * @returns {String}
+ */
+function getDisplayNameFromPersonalDetails({firstName, lastName}) {
+    const fullName = `${firstName || ''} ${lastName || ''}`.trim();
+    return fullName;
+}
+
+/**
  * Gets the first and last name from the user's personal details.
  * If the login is the same as the displayName, then they don't exist,
  * so we return empty strings instead.
@@ -481,4 +492,5 @@ export {
     updateAutomaticTimezone,
     updateSelectedTimezone,
     getCountryISO,
+    getDisplayNameFromPersonalDetails
 };
