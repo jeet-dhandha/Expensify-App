@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import _ from 'underscore';
 import {withOnyx} from 'react-native-onyx';
 import PropTypes from 'prop-types';
+import Str from 'expensify-common/lib/str';
 import * as Report from '../../libs/actions/Report';
 import withLocalize, {withLocalizePropTypes} from '../../components/withLocalize';
 import compose from '../../libs/compose';
@@ -130,7 +131,7 @@ class WorkspaceNewRoomPage extends React.Component {
         // Workspaces are policies with type === 'free'
         const workspaceOptions = _.map(
             _.filter(this.props.policies, (policy) => policy && policy.type === CONST.POLICY.TYPE.FREE),
-            (policy) => ({label: policy.name, key: policy.id, value: policy.id}),
+            (policy) => ({label: Str.truncateInMiddle(policy.name, 35), key: policy.id, value: policy.id}),
         );
 
         const visibilityOptions = _.map(
