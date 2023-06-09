@@ -441,6 +441,7 @@ function ReportActionItem(props) {
                             style={StyleUtils.getReportActionItemStyle(
                                 hovered || isWhisper || isContextMenuActive || props.draftMessage,
                                 (props.network.isOffline && props.action.isLoading) || props.action.error,
+                                isWhisper
                             )}
                         >
                             <OfflineWithFeedback

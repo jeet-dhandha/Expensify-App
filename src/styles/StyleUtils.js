@@ -610,12 +610,14 @@ function getLoginPagePromoStyle() {
  *
  * @param {Boolean} [isHovered]
  * @param {Boolean} [isLoading]
+ * @param {Boolean} [isWhisper]
  * @returns {Object}
  */
-function getReportActionItemStyle(isHovered = false, isLoading = false) {
+function getReportActionItemStyle(isHovered = false, isLoading = false, isWhisper = false) {
     return {
         display: 'flex',
         justifyContent: 'space-between',
+        ...(isWhisper ? {marginVertical:10} : {}),
         backgroundColor: isHovered
             ? themeColors.hoverComponentBG
             : // Warning: Setting this to a non-transparent color will cause unread indicator to break on Android
