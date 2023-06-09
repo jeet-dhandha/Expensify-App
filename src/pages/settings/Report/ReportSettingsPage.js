@@ -103,6 +103,7 @@ class ReportSettingsPage extends Component {
 
         return (
             <ScreenWrapper>
+                <View style={styles.flex1}>
                 <FullPageNotFoundView shouldShow={_.isEmpty(this.props.report)}>
                     <HeaderWithBackButton
                         title={this.props.translate('common.settings')}
@@ -216,6 +217,7 @@ class ReportSettingsPage extends Component {
                         />
                     )}
                 </FullPageNotFoundView>
+              </View>      
             </ScreenWrapper>
         );
     }
