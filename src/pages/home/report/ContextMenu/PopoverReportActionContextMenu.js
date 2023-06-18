@@ -130,6 +130,7 @@ class PopoverReportActionContextMenu extends React.Component {
      * @param {Boolean} isChronosReport - Flag to check if the chat participant is Chronos
      * @param {Boolean} isPinnedChat - Flag to check if the chat is pinned in the LHN. Used for the Pin/Unpin action
      * @param {Boolean} isUnreadChat - Flag to check if the chat is unread in the LHN. Used for the Mark as Read/Unread action
+     * @param {String} parentReportID - Active Parent Report Id
      */
     showContextMenu(
         type,
@@ -145,6 +146,7 @@ class PopoverReportActionContextMenu extends React.Component {
         isChronosReport = false,
         isPinnedChat = false,
         isUnreadChat = false,
+        parentReportID = null,
     ) {
         const nativeEvent = event.nativeEvent || {};
         this.contextMenuAnchor = contextMenuAnchor;
@@ -169,6 +171,7 @@ class PopoverReportActionContextMenu extends React.Component {
                 },
                 type,
                 reportID,
+                parentReportID,
                 reportAction,
                 selection,
                 isPopoverVisible: true,
@@ -252,7 +255,7 @@ class PopoverReportActionContextMenu extends React.Component {
         if (ReportActionsUtils.isMoneyRequestAction(this.state.reportAction)) {
             IOU.deleteMoneyRequest(this.state.reportID, this.state.reportAction.originalMessage.IOUReportID, this.state.reportAction, true);
         } else {
-            Report.deleteReportComment(this.state.reportID, this.state.reportAction);
+            Report.deleteReportComment(this.state.reportID, this.state.reportAction, this.state.parentReportID);
         }
         this.setState({isDeleteCommentConfirmModalVisible: false});
     }

@@ -786,8 +786,9 @@ Onyx.connect({
  *
  * @param {String} reportID
  * @param {Object} reportAction
+ * @param {String} parentReportID
  */
-function deleteReportComment(reportID, reportAction) {
+function deleteReportComment(reportID, reportAction, parentReportID) {
     const reportActionID = reportAction.reportActionID;
     const deletedMessage = [
         {
@@ -869,6 +870,12 @@ function deleteReportComment(reportID, reportAction) {
         reportActionID: reportAction.reportActionID,
     };
     API.write('DeleteComment', parameters, {optimisticData, successData, failureData});
+    
+    // To update LHN `report name` and `last message text` we need to open the reports again.
+    openReport(reportID);
+    if (parentReportID) {
+        openReport(parentReportID);
+    } 
 }
 
 /**
