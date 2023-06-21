@@ -9,6 +9,8 @@ import SectionList from '../SectionList';
 import Text from '../Text';
 import {propTypes as optionsListPropTypes, defaultProps as optionsListDefaultProps} from './optionsListPropTypes';
 import OptionsListSkeletonView from '../OptionsListSkeletonView';
+import * as Expensicons from '../Icon/Expensicons';
+import Icon from '../Icon';
 
 const propTypes = {
     /** Determines whether the keyboard gets dismissed in response to a drag */
@@ -40,13 +42,24 @@ class BaseOptionsList extends Component {
         this.buildFlatSectionArray = this.buildFlatSectionArray.bind(this);
         this.extractKey = this.extractKey.bind(this);
         this.onViewableItemsChanged = this.onViewableItemsChanged.bind(this);
+        this.handleLayout = this.handleLayout.bind(this);
+        this.handleContentSizeChange = this.handleContentSizeChange.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
         this.didLayout = false;
+
+        this.state = {
+            isScrollable: false,
+            contentHeight: 0,
+            height: 0,
+        };
 
         this.flattenedData = this.buildFlatSectionArray();
     }
 
-    shouldComponentUpdate(nextProps) {
+    shouldComponentUpdate(nextProps, nextState) {
         return (
+            nextState.isScrollable !== this.state.isScrollable ||
+            nextState.isLastItemVisible !== this.state.isLastItemVisible ||
             nextProps.focusedIndex !== this.props.focusedIndex ||
             nextProps.selectedOptions.length !== this.props.selectedOptions.length ||
             nextProps.headerMessage !== this.props.headerMessage ||
@@ -149,6 +162,31 @@ class BaseOptionsList extends Component {
         return option.keyForList;
     }
 
+    handleLayout(event) {
+        const {height} = event.nativeEvent.layout;
+        const {contentHeight} = this.state;
+        this.setState({isScrollable: contentHeight > height, height});
+    }
+
+    handleContentSizeChange(contentWidth, contentHeight) {
+        const {height} = this.state;
+        this.setState({isScrollable: contentHeight > height, contentHeight});
+    }
+
+    handleScroll(event){
+        // Call the provided onScroll function
+        this.props.onScroll(event);
+        
+        // Do our own scroll handling
+        const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
+        const visibleItems = contentOffset.y + layoutMeasurement.height;
+        const totalItems = contentSize.height;
+        const isLastItemVisible = Math.ceil(visibleItems) >= totalItems;
+        if (isLastItemVisible !== this.state.isLastItemVisible) {
+          this.setState({ isLastItemVisible });
+        }
+    };
+
     /**
      * Function which renders a row in the list
      *
@@ -205,6 +243,7 @@ class BaseOptionsList extends Component {
     }
 
     render() {
+        const {isScrollable, isLastItemVisible} = this.state;
         return (
             <View style={this.props.listContainerStyles}>
                 {this.props.isLoading ? (
@@ -222,7 +261,6 @@ class BaseOptionsList extends Component {
                             keyboardShouldPersistTaps="always"
                             keyboardDismissMode={this.props.keyboardDismissMode}
                             onScrollBeginDrag={this.props.onScrollBeginDrag}
-                            onScroll={this.props.onScroll}
                             contentContainerStyle={this.props.contentContainerStyles}
                             showsVerticalScrollIndicator={false}
                             sections={this.props.sections}
@@ -237,7 +275,15 @@ class BaseOptionsList extends Component {
                             windowSize={5}
                             viewabilityConfig={{viewAreaCoveragePercentThreshold: 95}}
                             onViewableItemsChanged={this.onViewableItemsChanged}
+                            onContentSizeChange={this.handleContentSizeChange}
+                            onLayout={this.handleLayout}
+                            onScroll={this.handleScroll}
                         />
+                        {isScrollable && !isLastItemVisible ? (
+                            <View style={[styles.alignSelfCenter, styles.mb1, styles.pAbsolute, styles.b0]}>
+                                <Icon src={Expensicons.DownArrow} />
+                            </View>
+                        ) : null}
                     </>
                 )}
             </View>

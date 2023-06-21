@@ -319,7 +319,7 @@ function MoneyRequestConfirmationList(props) {
                 title={formattedAmount}
                 description={translate('iou.amount')}
                 onPress={() => props.navigateToStep(0)}
-                style={[styles.moneyRequestMenuItem, styles.mt2]}
+                style={[styles.moneyRequestMenuItem, styles.mt2, styles.borderTop]}
                 titleStyle={styles.moneyRequestConfirmationAmount}
                 disabled={didConfirm || props.isReadOnly}
             />
