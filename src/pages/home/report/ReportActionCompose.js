@@ -53,6 +53,7 @@ import Permissions from '../../../libs/Permissions';
 import * as TaskUtils from '../../../libs/actions/Task';
 import * as Browser from '../../../libs/Browser';
 import PressableWithFeedback from '../../../components/Pressable/PressableWithFeedback';
+import * as ReportActionContextMenu from './ContextMenu/ReportActionContextMenu';
 
 const propTypes = {
     /** Beta features list */
@@ -177,6 +178,7 @@ class ReportActionCompose extends React.Component {
         this.getMoneyRequestOptions = this.getMoneyRequestOptions.bind(this);
         this.getTaskOption = this.getTaskOption.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
+        this.onEdit = this.onEdit.bind(this);
         this.insertSelectedEmoji = this.insertSelectedEmoji.bind(this);
         this.insertSelectedMention = this.insertSelectedMention.bind(this);
         this.setExceededMaxCommentLength = this.setExceededMaxCommentLength.bind(this);
@@ -221,6 +223,10 @@ class ReportActionCompose extends React.Component {
             composerHeight: 0,
             hasExceededMaxCommentLength: false,
             isAttachmentPreviewActive: false,
+            isEdit: false,
+            editReport: null,
+            editReportAction: null,
+            editInitMessage: '',
             ...this.getDefaultSuggestionsValues(),
         };
     }
@@ -285,6 +291,29 @@ class ReportActionCompose extends React.Component {
         this.calculateMentionSuggestion();
     }
 
+    onEdit() {
+        const {value: draft, editReportAction, editReport} = this.state;
+        // Do nothing if draft exceed the character limit
+        if (ReportUtils.getCommentLength(draft) > CONST.MAX_COMMENT_LENGTH) {
+            return;
+        }
+
+        const trimmedNewDraft = draft.trim();
+
+        // If the reportActionID and parentReportActionID are the same then the user is editing the first message of a
+        // thread and we should pass the parentReportID instead of the reportID of the thread
+        const reportID = editReport.parentReportActionID === editReportAction.reportActionID ? editReport.parentReportID : editReport.reportID;
+
+        // When user tries to save the empty message, it will delete it. Prompt the user to confirm deleting.
+        if (!trimmedNewDraft) {
+            ReportActionContextMenu.showDeleteModal(reportID, editReportAction, false, () => {}, () => {});
+            return;
+        }
+
+        Report.editReportComment(reportID, editReportAction, trimmedNewDraft);
+        this.setState({editReport: null, editReportAction: null, editInitMessage: '', isEdit: false, value: ''});
+    }
+
     getDefaultSuggestionsValues() {
         return {
             suggestedEmojis: [],
@@ -339,6 +368,13 @@ class ReportActionCompose extends React.Component {
      */
     setTextInputRef(el) {
         ReportActionComposeFocusManager.composerRef.current = el;
+        ReportActionComposeFocusManager.composerRef.current.setIsEditingComment = ({
+            isEdit,
+            editReport,
+            editReportAction,
+            editInitMessage,
+            value,
+        }) => this.setState({isEdit, editReport, editReportAction, editInitMessage, value});
         this.textInput = el;
     }
 
@@ -874,6 +910,10 @@ class ReportActionCompose extends React.Component {
             e.preventDefault();
         }
 
+        if(this.state.isEdit) {
+            this.onEdit();
+            return;
+        }
         // Since we're submitting the form here which should clear the composer
         // We don't really care about saving the draft the user was typing
         // We need to make sure an empty draft gets saved instead
@@ -934,6 +974,7 @@ class ReportActionCompose extends React.Component {
                             hasExceededMaxCommentLength && styles.borderColorDanger,
                         ]}
                     >
+                        
                         <AttachmentModal
                             headerTitle={this.props.translate('reportActionCompose.sendAttachment')}
                             onConfirm={this.addAttachment}
@@ -1005,7 +1046,7 @@ class ReportActionCompose extends React.Component {
                                                                 this.setMenuVisibility(true);
                                                             }}
                                                             style={styles.composerSizeButton}
-                                                            disabled={isBlockedFromConcierge || this.props.disabled}
+                                                            disabled={this.state.isEdit || isBlockedFromConcierge || this.props.disabled}
                                                             accessibilityRole="button"
                                                             accessibilityLabel={this.props.translate('reportActionCompose.addAction')}
                                                         >
@@ -1130,7 +1171,7 @@ class ReportActionCompose extends React.Component {
                             // Keep focus on the composer when Send message is clicked.
                             onMouseDown={(e) => e.preventDefault()}
                         >
-                            <Tooltip text={this.props.translate('common.send')}>
+                            <Tooltip text={this.state.isEdit ?  this.props.translate('common.save') : this.props.translate('common.send')}>
                                 <PressableWithFeedback
                                     style={[styles.chatItemSubmitButton, this.state.isCommentEmpty || hasExceededMaxCommentLength ? undefined : styles.buttonSuccess]}
                                     onPress={this.submitForm}
@@ -1139,8 +1180,10 @@ class ReportActionCompose extends React.Component {
                                     accessibilityLabel={this.props.translate('common.send')}
                                 >
                                     <Icon
-                                        src={Expensicons.Send}
-                                        fill={this.state.isCommentEmpty || hasExceededMaxCommentLength ? themeColors.icon : themeColors.textLight}
+                                        src={this.state.isEdit ? Expensicons.Checkmark : Expensicons.Send}
+                                        fill={
+                                          (this.state.isEdit && this.state.editInitMessage === this.state.value) && (this.state.isCommentEmpty || hasExceededMaxCommentLength) ? themeColors.icon : themeColors.textLight
+                                        }
                                     />
                                 </PressableWithFeedback>
                             </Tooltip>

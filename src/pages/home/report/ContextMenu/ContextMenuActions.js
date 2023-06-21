@@ -250,16 +250,24 @@ export default [
         shouldShow: (type, reportAction, isArchivedRoom, betas, menuTarget, isChronosReport) =>
             type === CONTEXT_MENU_TYPES.REPORT_ACTION && ReportUtils.canEditReportAction(reportAction) && !isArchivedRoom && !isChronosReport,
         onPress: (closePopover, {reportID, reportAction, draftMessage}) => {
-            const editAction = () => Report.saveReportActionDraft(reportID, reportAction.reportActionID, _.isEmpty(draftMessage) ? getActionText(reportAction) : '');
+            const text = _.isEmpty(draftMessage) ? getActionText(reportAction) : '';
+            const report = ReportUtils.getReport(reportID);
+            ReportActionComposeFocusManager.setIsEditingComment({
+                isEdit: true,
+                editReport: report, 
+                editReportAction: reportAction,
+                editInitMessage: text, 
+                value: text,
+            });
+            // const editAction = () => Report.saveReportActionDraft(reportID, reportAction.reportActionID, text);
 
             if (closePopover) {
                 // Hide popover, then call editAction
-                hideContextMenu(false, editAction);
-                return;
+                return hideContextMenu(false, () => {});
             }
 
             // No popover to hide, call editAction immediately
-            editAction();
+            // editAction();
         },
         getDescription: () => {},
     },

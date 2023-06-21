@@ -35,6 +35,19 @@ function clear() {
 }
 
 /**
+ * To Set Editing Data
+ * @param {object} data
+ */
+function setIsEditingComment(data) {
+    if (!composerRef.current) {
+        return;
+    }
+
+    composerRef.current.setIsEditingComment(data);
+    focus();
+}
+
+/**
  * Exposes the current focus state of the report action composer.
  * @return {Boolean} isFocused
  */
@@ -48,4 +61,5 @@ export default {
     focus,
     clear,
     isFocused,
+    setIsEditingComment,
 };
