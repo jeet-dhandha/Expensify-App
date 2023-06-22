@@ -288,6 +288,7 @@ class ReportActionsView extends React.Component {
     scrollToBottomAndMarkReportAsRead() {
         ReportScrollManager.scrollToBottom();
         Report.readNewestAction(this.props.report.reportID);
+        this.setState({newMarkerReportActionID: ''});
     }
 
     /**
@@ -310,6 +311,12 @@ class ReportActionsView extends React.Component {
      */
     trackScroll({nativeEvent}) {
         this.currentScrollOffset = -nativeEvent.contentOffset.y;
+        
+        // If the user scrolls to the top of the list, we want to mark the report as read
+        if(nativeEvent.contentOffset.y === 0 ) {
+            this.scrollToBottomAndMarkReportAsRead();
+        }
+
         this.toggleFloatingMessageCounter();
     }
 
