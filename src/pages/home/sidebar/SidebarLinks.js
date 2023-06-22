@@ -24,6 +24,7 @@ import withCurrentUserPersonalDetails from '../../../components/withCurrentUserP
 import withWindowDimensions from '../../../components/withWindowDimensions';
 import reportActionPropTypes from '../report/reportActionPropTypes';
 import LHNOptionsList from '../../../components/LHNOptionsList/LHNOptionsList';
+import * as LHNOptionsListContext from '../../../components/LHNOptionsList/LHNOptionsListContext';
 import SidebarUtils from '../../../libs/SidebarUtils';
 import reportPropTypes from '../../reportPropTypes';
 import OfflineWithFeedback from '../../../components/OfflineWithFeedback';
@@ -247,6 +248,7 @@ class SidebarLinks extends React.Component {
                     skeletonPlaceholder
                 ) : (
                     <LHNOptionsList
+                        ref={LHNOptionsListContext.contextRef}
                         contentContainerStyles={[styles.sidebarListContainer, {paddingBottom: StyleUtils.getSafeAreaMargins(this.props.insets).marginBottom}]}
                         data={optionListItems}
                         focusedIndex={_.findIndex(optionListItems, (option) => option.toString() === this.props.currentReportId)}

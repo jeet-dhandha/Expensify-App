@@ -38,7 +38,11 @@ class LHNOptionsList extends Component {
 
         this.renderItem = this.renderItem.bind(this);
         this.getItemLayout = this.getItemLayout.bind(this);
+        this.updateContextMenuReportID = this.updateContextMenuReportID.bind(this);
         this.data = this.props.data;
+        this.state = {
+            contextMenuReportID: null,
+        };
     }
 
     /**
@@ -60,6 +64,10 @@ class LHNOptionsList extends Component {
         };
     }
 
+    updateContextMenuReportID(reportID) {
+        this.setState({contextMenuReportID: reportID});
+    }
+
     /**
      * Function which renders a row in the list
      *
@@ -73,6 +81,7 @@ class LHNOptionsList extends Component {
         return (
             <OptionRowLHN
                 reportID={item}
+                contextMenuReportID={this.state.contextMenuReportID}
                 viewMode={this.props.optionMode}
                 isFocused={!this.props.shouldDisableFocusOptions && this.props.focusedIndex === index}
                 onSelectRow={this.props.onSelectRow}

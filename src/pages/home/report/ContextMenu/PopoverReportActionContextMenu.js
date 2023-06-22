@@ -7,6 +7,7 @@ import withLocalize, {withLocalizePropTypes} from '../../../../components/withLo
 import PopoverWithMeasuredContent from '../../../../components/PopoverWithMeasuredContent';
 import BaseReportActionContextMenu from './BaseReportActionContextMenu';
 import ConfirmModal from '../../../../components/ConfirmModal';
+import * as LHNOptionsListContext from '../../../../components/LHNOptionsList/LHNOptionsListContext';
 import CONST from '../../../../CONST';
 import * as ReportActionsUtils from '../../../../libs/ReportActionsUtils';
 import * as IOU from '../../../../libs/actions/IOU';
@@ -158,6 +159,7 @@ class PopoverReportActionContextMenu extends React.Component {
         this.onPopoverHide = onHide;
 
         this.getContextMenuMeasuredLocation().then(({x, y}) => {
+            LHNOptionsListContext.updateContextMenuReportID(reportID);
             this.setState({
                 cursorRelativePosition: {
                     horizontal: nativeEvent.pageX - x,
@@ -216,6 +218,7 @@ class PopoverReportActionContextMenu extends React.Component {
      */
     runAndResetOnPopoverHide() {
         this.setState({reportID: '0', reportAction: {}}, () => {
+            LHNOptionsListContext.updateContextMenuReportID(null);
             this.onPopoverHide = this.runAndResetCallback(this.onPopoverHide);
             this.onPopoverHideActionCallback = this.runAndResetCallback(this.onPopoverHideActionCallback);
         });

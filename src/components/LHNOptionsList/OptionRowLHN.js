@@ -31,6 +31,8 @@ const propTypes = {
 
     /** The ID of the report that the option is for */
     reportID: PropTypes.string.isRequired,
+    /** The ID of the report that the option is for */
+    contextMenuReportID: PropTypes.string,
 
     /** Whether this option is currently in focus so we can modify its style */
     isFocused: PropTypes.bool,
@@ -49,6 +51,7 @@ const propTypes = {
 const defaultProps = {
     hoverStyle: styles.sidebarLinkHover,
     viewMode: 'default',
+    contextMenuReportID: null,
     onSelectRow: () => {},
     isFocused: false,
     style: null,
@@ -88,6 +91,8 @@ function OptionRowLHN(props) {
         (optionItem.isUnreadWithMention ||
             (optionItem.hasOutstandingIOU && !optionItem.isIOUReportOwner) ||
             (optionItem.isTaskReport && optionItem.isTaskAssignee && !optionItem.isTaskCompleted));
+
+    const isContextActive = props.contextMenuReportID === props.reportID;
 
     /**
      * Show the ReportActionContextMenu modal popover.
@@ -140,7 +145,7 @@ function OptionRowLHN(props) {
                             styles.sidebarLinkInner,
                             StyleUtils.getBackgroundColorStyle(themeColors.sidebar),
                             props.isFocused ? styles.sidebarLinkActive : null,
-                            hovered && !props.isFocused ? props.hoverStyle : null,
+                            (hovered || isContextActive) && !props.isFocused ? props.hoverStyle : null,
                         ]}
                     >
                         <View
