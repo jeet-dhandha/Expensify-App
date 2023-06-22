@@ -320,12 +320,16 @@ function getAutoGrowHeightInputStyle(textInputHeight, maxHeight) {
         };
     }
 
+    let height = maxHeight - styles.textInputMultilineContainer.paddingTop - styles.textInputContainer.borderBottomWidth;
+    if(Browser.getBrowser() === CONST.BROWSER.SAFARI) {
+        height = textInputHeight;
+    }
     return {
         ...styles.pr0,
         ...styles.overflowHidden,
         // maxHeight is not of the input only but the of the whole input container
         // which also includes the top padding and bottom border
-        height: maxHeight - styles.textInputMultilineContainer.paddingTop - styles.textInputContainer.borderBottomWidth,
+        height,
     };
 }
 
