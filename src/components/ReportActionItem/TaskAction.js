@@ -53,11 +53,12 @@ function TaskAction(props) {
             messageLinkText = props.translate('newTaskPage.task');
     }
 
+    messageLinkText = `${messageLinkText} : `;
+
     return (
         <>
-            <View style={[styles.flex1, styles.flexRow, styles.alignItemsCenter]}>
-                <Text style={styles.chatItemMessageLink}>{messageLinkText}</Text>
-                <Text style={[styles.chatItemMessage]}>{` ${taskReportName}`}</Text>
+            <View style={[styles.flex1]}>
+                <Text style={[styles.chatItemMessage]}><Text style={styles.chatItemMessageLink}>{messageLinkText}</Text>{` ${taskReportName}`}</Text>
             </View>
         </>
     );

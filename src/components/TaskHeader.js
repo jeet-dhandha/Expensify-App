@@ -72,7 +72,7 @@ function TaskHeader(props) {
                         pressDimmingValue={0.2}
                     >
                         <View style={[styles.flexRow, styles.alignItemsCenter, styles.justifyContentBetween, styles.pv3]}>
-                            <View style={[styles.flexRow, styles.alignItemsCenter, styles.justifyContentBetween]}>
+                            <View style={[styles.flexRow, styles.alignItemsCenter, styles.justifyContentBetween, styles.flex2]}>
                                 {assigneeAccountID && assigneeAccountID > 0 && (
                                     <>
                                         <Avatar
@@ -81,9 +81,9 @@ function TaskHeader(props) {
                                             name={assigneeName}
                                             size={CONST.AVATAR_SIZE.HEADER}
                                         />
-                                        <View style={[styles.flexColumn, styles.ml3]}>
+                                        <View style={[styles.flexColumn, styles.ml3, styles.flex1]}>
                                             <Text
-                                                style={[styles.headerText, styles.pre]}
+                                                style={[styles.headerText, styles.pre, styles.overflowHidden, styles.flex1]}
                                                 numberOfLines={1}
                                             >
                                                 {assigneeName}
@@ -92,7 +92,7 @@ function TaskHeader(props) {
                                     </>
                                 )}
                             </View>
-                            <View style={[styles.flexRow]}>
+                            <View style={[styles.flexRow, styles.ml4]}>
                                 {isCompleted ? (
                                     <>
                                         <Text>{props.translate('task.completed')}</Text>
