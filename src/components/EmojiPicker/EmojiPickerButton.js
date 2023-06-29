@@ -27,13 +27,23 @@ const defaultProps = {
 
 function EmojiPickerButton(props) {
     let emojiPopoverAnchor = null;
+    
+    const onPress = () => EmojiPickerAction.showEmojiPicker(props.onModalHide, props.onEmojiSelected, emojiPopoverAnchor, undefined, () => {}, {}, 'COMPOSE');
+    
+    React.useEffect(() => {
+        if(EmojiPickerAction.getActiveType() === "COMPOSE"){
+            onPress()
+        }
+        return () => {}
+    }, []);
+
     return (
         <Tooltip text={props.translate('reportActionCompose.emoji')}>
             <PressableWithoutFeedback
                 ref={(el) => (emojiPopoverAnchor = el)}
                 style={({hovered, pressed}) => [styles.chatItemEmojiButton, StyleUtils.getButtonBackgroundColorStyle(getButtonState(hovered, pressed))]}
                 disabled={props.isDisabled}
-                onPress={() => EmojiPickerAction.showEmojiPicker(props.onModalHide, props.onEmojiSelected, emojiPopoverAnchor)}
+                onPress={onPress}
                 nativeID={props.nativeID}
                 accessibilityLabel={props.translate('reportActionCompose.emoji')}
             >

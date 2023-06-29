@@ -86,6 +86,20 @@ function getParentReportAction(report) {
 }
 
 /**
+ * Returns the parentReportAction if the given report is a thread/task.
+ *
+ * @param {String} reportID
+ * @param {String} reportActionID
+ * @returns {Object}
+ */
+function getReportAction(reportID, reportActionID) {
+    if (!reportID || !reportActionID) {
+        return {};
+    }
+    return lodashGet(allReportActions, [reportID, reportActionID], {});
+}
+
+/**
  * Determines if the given report action is sent money report action by checking for 'pay' type and presence of IOUDetails object.
  *
  * @param {Object} reportAction
@@ -458,6 +472,7 @@ function isWhisperAction(action) {
 }
 
 export {
+    getReportAction,
     getSortedReportActions,
     getLastVisibleAction,
     getLastVisibleMessageText,

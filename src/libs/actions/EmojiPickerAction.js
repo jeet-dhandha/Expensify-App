@@ -1,6 +1,7 @@
 import React from 'react';
 
 const emojiPickerRef = React.createRef();
+let activeType = null;
 
 /**
  * Show the ReportActionContextMenu modal popover.
@@ -11,12 +12,13 @@ const emojiPickerRef = React.createRef();
  * @param {Object} [anchorOrigin] - Anchor origin for Popover
  * @param {Function} [onWillShow=() => {}] - Run a callback when Popover will show
  * @param {Object} reportAction - ReportAction for EmojiPicker
+ * @param {String} type - Type of EmojiPicker
  */
-function showEmojiPicker(onModalHide = () => {}, onEmojiSelected = () => {}, emojiPopoverAnchor, anchorOrigin = undefined, onWillShow = () => {}, reportAction = {}) {
+function showEmojiPicker(onModalHide = () => {}, onEmojiSelected = () => {}, emojiPopoverAnchor, anchorOrigin = undefined, onWillShow = () => {}, reportAction = {}, type = undefined) {
     if (!emojiPickerRef.current) {
         return;
     }
-
+    activeType = type;
     emojiPickerRef.current.showEmojiPicker(onModalHide, onEmojiSelected, emojiPopoverAnchor, anchorOrigin, onWillShow, reportAction);
 }
 
@@ -29,6 +31,7 @@ function hideEmojiPicker(isNavigating) {
     if (!emojiPickerRef.current) {
         return;
     }
+    activeType = null;
     emojiPickerRef.current.hideEmojiPicker(isNavigating);
 }
 
@@ -45,4 +48,9 @@ function isActiveReportAction(actionID) {
     return emojiPickerRef.current.isActiveReportAction(actionID);
 }
 
-export {emojiPickerRef, showEmojiPicker, hideEmojiPicker, isActiveReportAction};
+function setActiveType(active) {
+    activeType = active;
+}
+function getActiveType() { return activeType; }
+
+export {emojiPickerRef, showEmojiPicker, hideEmojiPicker, isActiveReportAction, getActiveType, setActiveType};

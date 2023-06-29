@@ -55,6 +55,8 @@ const defaultProps = {
 function AddReactionBubble(props) {
     const ref = useRef();
 
+    const emojiKey = `ADD_REACTION_BUBBLE_${props.reportAction.reportActionID}`;
+
     const onPress = () => {
         const openPicker = (refParam, anchorOrigin) => {
             EmojiPickerAction.showEmojiPicker(
@@ -66,6 +68,7 @@ function AddReactionBubble(props) {
                 anchorOrigin,
                 props.onWillShowPicker,
                 props.reportAction,
+                emojiKey,
             );
         };
 
@@ -75,6 +78,13 @@ function AddReactionBubble(props) {
             openPicker();
         }
     };
+
+    React.useEffect(() => {
+        if (EmojiPickerAction.getActiveType() === emojiKey) {
+            onPress();
+        }
+        return () => {};
+    }, []);
 
     return (
         <Tooltip text={props.translate('emojiReactions.addReactionTooltip')}>

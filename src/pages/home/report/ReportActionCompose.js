@@ -343,6 +343,7 @@ class ReportActionCompose extends React.Component {
      */
     setTextInputRef(el) {
         ReportActionComposeFocusManager.composerRef.current = el;
+        ReportActionComposeFocusManager.composerRef.current.focus = this.focus;
         this.textInput = el;
     }
 
@@ -1123,9 +1124,7 @@ class ReportActionCompose extends React.Component {
                         {DeviceCapabilities.canUseTouchScreen() && this.props.isMediumScreenWidth ? null : (
                             <EmojiPickerButton
                                 isDisabled={isBlockedFromConcierge || this.props.disabled}
-                                onModalHide={() => {
-                                    this.focus(true);
-                                }}
+                                onModalHide={() => this.focus(true)}
                                 onEmojiSelected={this.addEmojiToTextBox}
                             />
                         )}

@@ -14,6 +14,7 @@ import variables from '../../../../styles/variables';
 import withWindowDimensions from '../../../../components/withWindowDimensions';
 import Navigation from '../../../../libs/Navigation/Navigation';
 import ROUTES from '../../../../ROUTES';
+import ReportActionComposeFocusManager from '../../../../libs/ReportActionComposeFocusManager';
 
 const propTypes = {
     /**
@@ -79,6 +80,7 @@ function BaseReactionList(props) {
             hoverStyle={styles.hoveredComponentBG}
             onSelectRow={() => {
                 props.onClose();
+                ReportActionComposeFocusManager.setFocus(false);
                 Navigation.navigate(ROUTES.getProfileRoute(item.accountID));
             }}
             option={{

@@ -9,6 +9,7 @@ import withWindowDimensions, {windowDimensionsPropTypes} from '../withWindowDime
 import withViewportOffsetTop, {viewportOffsetTopPropTypes} from '../withViewportOffsetTop';
 import compose from '../../libs/compose';
 import * as StyleUtils from '../../styles/StyleUtils';
+import * as EmojiPickerAction from '../../libs/actions/EmojiPickerAction';
 
 const DEFAULT_ANCHOR_ORIGIN = {
     horizontal: CONST.MODAL.ANCHOR_ORIGIN_HORIZONTAL.RIGHT,
@@ -97,6 +98,7 @@ class EmojiPicker extends React.Component {
         if (isNavigating) {
             this.onModalHide = () => {};
         }
+        EmojiPickerAction.setActiveType(null);
         this.emojiPopoverAnchor = null;
         this.setState({isEmojiPickerVisible: false});
     }

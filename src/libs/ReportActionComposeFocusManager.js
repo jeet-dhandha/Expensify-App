@@ -42,10 +42,22 @@ function isFocused() {
     return composerRef.current && composerRef.current.isFocused();
 }
 
+/**
+* Function to set focus on the report action composer.
+* @param {Boolean} focusState
+*/
+function setFocus(focusState) {
+    if (!composerRef.current || !_.isFunction(composerRef.current.focus)) {
+        return;
+    }
+    composerRef.current.focus(focusState);
+}
+
 export default {
     composerRef,
     onComposerFocus,
     focus,
     clear,
     isFocused,
+    setFocus,
 };
