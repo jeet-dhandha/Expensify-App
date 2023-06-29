@@ -6,6 +6,7 @@ import ONYXKEYS from '../ONYXKEYS';
 import CONST from '../CONST';
 import emojisTrie from './EmojiTrie';
 import FrequentlyUsed from '../../assets/images/history.svg';
+import emojiMap from '../../assets/emojiMap';
 
 let frequentlyUsedEmojis = [];
 Onyx.connect({
@@ -215,6 +216,22 @@ const getEmojiCodeWithSkinColor = (item, preferredSkinToneIndex) => {
     return code;
 };
 
+function getEmojiCodeFromText(text) {
+    // For example, replace "Some comment with emoji 👉"
+    const emojis = [];
+    const added = {};
+    if(!text || typeof text !== "string") { return emojis; }
+    const arr = [...text];
+    for (let i = 0; i < arr.length; i++) {
+        const character = arr[i];
+        if(emojiMap[character] && added[character] !== true) {
+            added[character] = true;
+            emojis.push(emojiMap[character]);
+        }
+    }
+    return emojis;
+}
+
 /**
  * Replace any emoji name in a text with the emoji icon.
  * If we're on mobile, we also add a space after the emoji granted there's no text after it.
@@ -225,11 +242,12 @@ const getEmojiCodeWithSkinColor = (item, preferredSkinToneIndex) => {
  */
 function replaceEmojis(text, preferredSkinTone = CONST.EMOJI_DEFAULT_SKIN_TONE) {
     let newText = text;
-    const emojis = [];
+    const emojis = [...getEmojiCodeFromText(text)];
     const emojiData = text.match(CONST.REGEX.EMOJI_NAME);
     if (!emojiData || emojiData.length === 0) {
         return {text: newText, emojis};
     }
+
     for (let i = 0; i < emojiData.length; i++) {
         const name = emojiData[i].slice(1, -1);
         const checkEmoji = emojisTrie.search(name);

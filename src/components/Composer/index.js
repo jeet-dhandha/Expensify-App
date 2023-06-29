@@ -16,6 +16,8 @@ import styles from '../../styles/styles';
 import Text from '../Text';
 import isEnterWhileComposition from '../../libs/KeyboardShortcut/isEnterWhileComposition';
 import CONST from '../../CONST';
+import * as EmojiUtils from '../../libs/EmojiUtils';
+import * as User from '../../libs/actions/User';
 
 const propTypes = {
     /** Maximum number of lines in the text input */
@@ -264,6 +266,12 @@ class Composer extends React.Component {
         try {
             document.execCommand('insertText', false, text);
             this.updateNumberOfLines();
+
+            const {emojis = []} = EmojiUtils.replaceEmojis(text, this.props.preferredSkinTone);
+            console.log('emojis', emojis);
+            if (!_.isEmpty(emojis)) {
+                User.updateFrequentlyUsedEmojis(EmojiUtils.getFrequentlyUsedEmojis(emojis));
+            }
 
             // Pointer will go out of sight when a large paragraph is pasted on the web. Refocusing the input keeps the cursor in view.
             this.textInput.blur();

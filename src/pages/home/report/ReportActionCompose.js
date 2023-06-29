@@ -1093,6 +1093,7 @@ class ReportActionCompose extends React.Component {
                                                     this.shouldBlockEmojiCalc = false;
                                                     this.shouldBlockMentionCalc = false;
                                                 }}
+                                                preferredSkinTone={this.props.preferredSkinTone}
                                                 onPasteFile={displayFileInModal}
                                                 shouldClear={this.state.textInputShouldClear}
                                                 onClear={() => this.setTextInputShouldClear(false)}
