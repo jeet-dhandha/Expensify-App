@@ -212,20 +212,22 @@ const getEmojiCodeWithSkinColor = (item, preferredSkinToneIndex) => {
     if (types && types[preferredSkinToneIndex]) {
         return types[preferredSkinToneIndex];
     }
-
     return code;
 };
 
 function getEmojiCodeFromText(text) {
     // For example, replace "Some comment with emoji 👉"
     const emojis = [];
-    const added = {};
     if(!text || typeof text !== "string") { return emojis; }
-    const arr = [...text];
-    for (let i = 0; i < arr.length; i++) {
-        const character = arr[i];
-        if(emojiMap[character] && added[character] !== true) {
-            added[character] = true;
+    
+    let parseEmojis = text.match(CONST.REGEX.EMOJI);
+    // /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi
+
+    if(!parseEmojis) { return emojis; }
+    parseEmojis = [...new Set(parseEmojis)];
+    for (let i = 0; i < parseEmojis.length; i++) {
+        const character = parseEmojis[i];
+        if(emojiMap[character]) {
             emojis.push(emojiMap[character]);
         }
     }
