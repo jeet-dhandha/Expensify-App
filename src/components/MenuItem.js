@@ -23,6 +23,7 @@ import ControlSelection from '../libs/ControlSelection';
 import variables from '../styles/variables';
 import * as Session from '../libs/actions/Session';
 import Hoverable from './Hoverable';
+import RenderHTML from './RenderHTML';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const propTypes = menuItemPropTypes;
@@ -203,13 +204,17 @@ const MenuItem = React.forwardRef((props, ref) => {
                                             </Text>
                                         )}
                                         <View style={[styles.flexRow, styles.alignItemsCenter]}>
-                                            {Boolean(props.title) && (
-                                                <Text
-                                                    style={titleTextStyle}
-                                                    numberOfLines={props.numberOfLinesTitle || undefined}
-                                                >
-                                                    {convertToLTR(props.title)}
-                                                </Text>
+                                            {props.html ? (
+                                                <RenderHTML html={`<comment>${props.html}</comment>`} />
+                                            ) : (
+                                                Boolean(props.title) && (
+                                                    <Text
+                                                        style={titleTextStyle}
+                                                        numberOfLines={props.numberOfLinesTitle || undefined}
+                                                    >
+                                                        {convertToLTR(props.title)}
+                                                    </Text>
+                                                )
                                             )}
                                             {Boolean(props.shouldShowTitleIcon) && (
                                                 <View style={[styles.ml2]}>

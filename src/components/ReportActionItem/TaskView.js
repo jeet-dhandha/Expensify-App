@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
+import ExpensiMark from 'expensify-common/lib/ExpensiMark';
 import reportPropTypes from '../../pages/reportPropTypes';
 import withLocalize, {withLocalizePropTypes} from '../withLocalize';
 import withWindowDimensions from '../withWindowDimensions';
@@ -51,6 +52,12 @@ function TaskView(props) {
     const policy = ReportUtils.getPolicy(props.report.policyID);
     const canEdit = PolicyUtils.isPolicyAdmin(policy) || Task.isTaskAssigneeOrTaskOwner(props.report, props.currentUserPersonalDetails.accountID);
     const disableState = !canEdit || !isOpen;
+
+    const parser = new ExpensiMark();
+    const description = props.report.description || '';
+    const htmlText = parser.replace(description);
+    const html = htmlText.length > 0 ? htmlText : null;
+
     return (
         <View>
             <Hoverable>
@@ -108,6 +115,7 @@ function TaskView(props) {
             <MenuItemWithTopDescription
                 description={props.translate('task.description')}
                 title={props.report.description || ''}
+                html={html}
                 onPress={() => Navigation.navigate(ROUTES.getTaskReportDescriptionRoute(props.report.reportID))}
                 shouldShowRightIcon={isOpen}
                 disabled={disableState}
